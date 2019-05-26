@@ -8,16 +8,16 @@ using Libdl: dlext
 
 
 # Settings
-url = "https://github.com/zeromq/libzmq/releases/download/v4.2.5/zeromq-4.2.5.tar.gz"
-hash = ""
+url = "https://github.com/schrodinger/coordgenlibs/archive/v1.2.2.tar.gz"
 prefix = Prefix("../deps")
 
-function compile()
+# Download and compile
+if !isexists(dylib)
     tarball_path = join(prefix, "downloads", "src.tar.gz")
-
-    download_verify_unpack(url, hash, tarball_path, force=true, verbose=false)
+    download(url, tarball_path)
+    
     rm(tarball_dir, force=true, recursive=true)
-
+    unpack()
     cd(source_path) do
         run(`./configure --prefix=$install_dir`)
         run("make")
@@ -27,7 +27,5 @@ end
 
 # install
 
-install(url, tarball_hash, prefix=prefix)
 products = [LibraryProduct(prefix, ["coordgenlibs"], "src.tar.gz")]
-
 write_deps_file(joinpath(@__DIR__, "deps.jl", products)
