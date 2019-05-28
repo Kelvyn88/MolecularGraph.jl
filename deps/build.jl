@@ -13,17 +13,15 @@ products = Product[
 
 if any(!satisfied(p; verbose=verbose) for p in products)
     tarball_dir = joinpath(prefix, "downloads")
-    tarball_path = joinpath(prefix, "downloads", "v1.2.2.tar.gz")
-    source_dir = joinpath(prefix, "downloads", "src")
-    install_dir = joinpath(source_dir, "build")
+    tarball_path = joinpath(tarball_dir, "v1.2.2.tar.gz")
+    install_dir = joinpath(tarball_dir, "coordgenlibs-1.2.2", "build")
     # delete old files
     rm(tarball_dir, force=true, recursive=true)
-    rm(source_dir, force=true, recursive=true)
     
     verbose && @info("Unpacking $tarball_path into $source_dir")
     download_verify(url, hash, tarball_path, force=true, verbose=verbose)
-    unpack(tarball_path, source_dir; verbose=verbose)
-    verbose && @info("Compiling in $source_dir...")
+    unpack(tarball_path, tarball_dir; verbose=verbose)
+    verbose && @info("Compiling in $install_dir...")
     mkdir(install_dir)
     cd(install_dir) do
         run(`cmake ..`)
